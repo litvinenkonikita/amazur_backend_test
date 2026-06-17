@@ -10,6 +10,7 @@ COPY app ./app
 COPY alembic ./alembic
 COPY alembic.ini ./
 COPY docker/postgres-init ./docker/postgres-init
+COPY tests ./tests
 
 RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir -e .
 
