@@ -3,32 +3,33 @@ services:
     image: postgres:17-alpine
     container_name: campaigns-db
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-campaigns}
-      POSTGRES_USER: ${POSTGRES_USER:-campaigns}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-campaigns}
+      POSTGRES_DB: campaigns
+      POSTGRES_USER: campaigns
+      POSTGRES_PASSWORD: campaigns
     ports:
       - "5432:5432"
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
       - ./docker/postgres-init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U campaigns -d campaigns"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   api:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     container_name: campaigns-api
-    env_file:
-      - .env
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
-      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://campaigns:campaigns@db:5432/campaigns}
-      APP_HOST: ${APP_HOST:-0.0.0.0}
-      APP_PORT: ${APP_PORT:-8000}
+      DATABASE_URL: postgresql+psycopg://campaigns:campaigns@db:5432/campaigns
     ports:
       - "8000:8000"
-    depends_on:
-      - db
-    volumes:
-      - .:/app
+    command: >
+      sh -c "alembic upgrade head &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8000"
 
 volumes:
-  postgres-data:
+  postgres_data:
