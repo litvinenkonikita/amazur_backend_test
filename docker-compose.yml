@@ -1,0 +1,34 @@
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: campaigns-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-campaigns}
+      POSTGRES_USER: ${POSTGRES_USER:-campaigns}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-campaigns}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./docker/postgres-init:/docker-entrypoint-initdb.d
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: campaigns-api
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://campaigns:campaigns@db:5432/campaigns}
+      APP_HOST: ${APP_HOST:-0.0.0.0}
+      APP_PORT: ${APP_PORT:-8000}
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+
+volumes:
+  postgres-data:
