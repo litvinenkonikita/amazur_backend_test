@@ -4,6 +4,12 @@ Revision ID: 20260616_0001
 Revises: None
 Create Date: 2026-06-16 00:00:00
 """
+"""initial schema
+
+Revision ID: 20260616_0001
+Revises: None
+Create Date: 2026-06-16 00:00:00
+"""
 
 from alembic import op
 import sqlalchemy as sa
@@ -15,7 +21,12 @@ branch_labels = None
 depends_on = None
 
 
-campaign_status = sa.Enum("active", "paused", name="campaign_status")
+campaign_status = postgresql.ENUM(
+    "active",
+    "paused",
+    name="campaign_status",
+    create_type=False,
+)
 
 
 def upgrade() -> None:
