@@ -1,9 +1,4 @@
-"""initial schema
 
-Revision ID: 20260616_0001
-Revises: None
-Create Date: 2026-06-16 00:00:00
-"""
 """initial schema
 
 Revision ID: 20260616_0001
