@@ -42,4 +42,7 @@ def decimal_column(*, nullable: bool, default: Decimal | None = None) -> Mapped[
 
 
 jsonb_type = JSONB
-status_enum = Enum(CampaignStatus, name="campaign_status", native_enum=True)
+status_enum = Enum(CampaignStatus,
+                   name = "campaign_status",
+                   native_enum = True,
+                   values_callable = lambda enum_cls: [item.value for item in enum_cls])
