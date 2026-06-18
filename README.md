@@ -78,7 +78,7 @@ alembic upgrade head
 uvicorn app.main:app --reload
 ```
 
-## Тесты
+## Запуск тестов
 
 ```bash
 docker compose exec api pytest -vv
